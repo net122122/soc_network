@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}
+    Пользователи ::  {{ block.super }}
+{% endblock %}
+
+{% block sidebar %}
+{% include 'inc/_sidebar.html' %}
+{% endblock %}
+
+{% block content %}
+{% for item in page %}
+            <div class="card mb-3">
+          <div class="card-body">
+              <div class="media">
+                  {% if item.photo %}
+                      <img src="{{ item.photo.url }}" alt="" width="350" class="mr-3">
+                  {% else %}
+                      <img src="https://picsum.photos/id/237/350/235" alt="" class="mr-3">
+                  {% endif %}
+                  <div class="media-budy">
+                      <h5 class="card-title">{{ item.first_name }}</h5>
+                      <p class="card-text">{{ item.last_name }}</p>
+                      <a href="#" class="btn btn-primary">Подробнее...</a>
+                  </div>
+              </div>
+          </div>
+        </div>
+{% endfor %}
+{% endblock %}

@@ -3,6 +3,7 @@ from .forms import PageForm, UserRegisterForm, UserLoginForm
 from django.views.generic import CreateView
 from django.contrib import messages
 from django.contrib.auth import login, logout
+from .models import Page
 
 
 def index(request):
@@ -45,6 +46,10 @@ def user_logout(request):
     logout(request)
     return redirect('login')
 
+
+def get_users(request):
+    page = Page.objects.all()
+    return render(request, template_name='network/get_users.html', context={'page': page})
 
 
 

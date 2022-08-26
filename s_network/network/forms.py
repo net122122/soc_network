@@ -18,7 +18,7 @@ class PageForm(forms.ModelForm):
 
 
 class UserRegisterForm(UserCreationForm):
-    username = forms.CharField(label='Имя пользователя',
+    username = forms.CharField(label='Логин',
                                widget=forms.TextInput(attrs={'class': 'form-control'}))
     email = forms.EmailField(label='E-mail',
                              widget=forms.EmailInput(attrs={'class': 'form-control'}))
