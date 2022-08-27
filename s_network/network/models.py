@@ -10,8 +10,11 @@ class Page(models.Model):
     likes = models.IntegerField(default=0)
 
     def get_absolute_url(self):
-        return reverse('home', kwargs={"pk": self.pk})
+        return reverse('view_page', kwargs={"pk": self.pk})
 
     def __str__(self):
         return self.last_name
+
+
+
 

@@ -8,19 +8,22 @@
 {% endblock %}
 
 {% block content %}
-{% for item in page %}
+{% for item in get_users %}
+<style>
+img { width: 200px; height: 250px; object-fit: cover; }
+</style>
             <div class="card mb-3">
           <div class="card-body">
               <div class="media">
                   {% if item.photo %}
-                      <img src="{{ item.photo.url }}" alt="" width="350" class="mr-3">
+                      <img src="{{ item.photo.url }}" alt=""   class="mr-3">
                   {% else %}
                       <img src="https://picsum.photos/id/237/350/235" alt="" class="mr-3">
                   {% endif %}
                   <div class="media-budy">
                       <h5 class="card-title">{{ item.first_name }}</h5>
                       <p class="card-text">{{ item.last_name }}</p>
-                      <a href="#" class="btn btn-primary">Подробнее...</a>
+                      <a href="{{ item.get_absolute_url }}" class="btn btn-primary">Подробнее...</a>
                   </div>
               </div>
           </div>
