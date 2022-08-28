@@ -11,9 +11,10 @@
 
 <h1>Регистрация</h1>
 
-<form method="post">
+<form action="." method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ user_form.as_p }}
+    {{ new_profile.as_p }}
     <button type="submit" class="btn btn-primary btn-block">Регистрация</button>
 </form>
 

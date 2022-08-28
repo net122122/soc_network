@@ -21,6 +21,24 @@
             </div>
             <div class="col-md-9">
 
+            {% if messages %}
+
+            {% for message in messages %}
+
+                {% if message.tags == 'error' %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ message }}
+                    </div>
+                {% else %}
+                    <div class="alert alert-{{ message.tags }}" role="alert">
+                        {{ message }}
+                    </div>
+                {% endif %}
+
+            {% endfor %}
+
+            {% endif %}
+
   {% block content %}Content{% endblock %}
 
                 {% if page_obj.has_other_pages %}
@@ -29,7 +47,7 @@
 
       {% if page_obj.has_previous %}
       <li class="page-item">
-      <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+      <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
     </li>
       {% endif %}
 
@@ -49,7 +67,7 @@
 
       {% if page_obj.has_next %}
       <li class="page-item">
-      <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+      <a class="page-link" href="?page={{ page_obj.next_page_number }}">Следующая</a>
     </li>
       {% endif %}
 

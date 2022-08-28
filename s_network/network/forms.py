@@ -1,35 +1,29 @@
 from django import forms
 from .models import Page
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import  AuthenticationForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
 
-class PageForm(forms.ModelForm):
-    class Meta:
-        model = Page
-        fields = ['first_name', 'last_name', 'age', 'photo']
-        widgets = {
-            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'last_name': forms.TextInput(attrs={'class': 'form-control', 'rows': 5}),
-            'age': forms.TextInput(attrs={'class': 'form-control'}),
-
-        }
-
-
-class UserRegisterForm(UserCreationForm):
-    username = forms.CharField(label='Логин',
-                               widget=forms.TextInput(attrs={'class': 'form-control'}))
-    email = forms.EmailField(label='E-mail',
-                             widget=forms.EmailInput(attrs={'class': 'form-control'}))
-    password1 = forms.CharField(label='Пароль',
-                                widget=forms.PasswordInput(attrs={'class': 'form-control'}))
-    password2 = forms.CharField(label='Подтверждение пароля',
-                                widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+class UserRegisterForm(forms.ModelForm):
+    password = forms.CharField(label='Пароль', widget=forms.PasswordInput)
+    password2 = forms.CharField(label='Повторите пароль', widget=forms.PasswordInput)
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password1', 'password2')
+        fields = ('username', 'email')
+
+    def clean_password2(self):
+        cd = self.cleaned_data
+        if cd['password'] != cd['password2']:
+            raise forms.ValidationError('Passwords don\'t match.')
+        return cd['password2']
+
+
+class   PageForm(forms.ModelForm):
+    class Meta:
+        model = Page
+        fields = ('photo', 'age', 'first_name', 'last_name')
 
 
 class UserLoginForm(AuthenticationForm):
