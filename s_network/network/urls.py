@@ -10,5 +10,6 @@ urlpatterns = [
     path('network/get-users/', GetUsers.as_view(), name='get_users'),
     path('network/my-page/', MyPage.as_view(), name='my_page'),
     path('network/<int:pk>/', ViewPage.as_view(), name='view_page'),
+    path('network/edit/', edit, name='edit'),
 ]
 

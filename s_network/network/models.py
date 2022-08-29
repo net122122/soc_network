@@ -16,7 +16,7 @@ class Page(models.Model):
         return reverse('view_page', kwargs={"pk": self.pk})
 
     def __str__(self):
-        return self.last_name
+        return str(self.user)
 
 
 

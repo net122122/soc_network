@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
-from .forms import PageForm, UserRegisterForm, UserLoginForm
-from django.views.generic import CreateView, DetailView, ListView
+from django.shortcuts import render, redirect, get_object_or_404
+from .forms import PageForm, UserRegisterForm, UserLoginForm, PageEditForm
+from django.views.generic import DetailView, ListView
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from .models import Page
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 
 
@@ -25,14 +26,14 @@ def register(request):
             new_profile.save()
             messages.success(request, 'Вы успешно зарегистрировались')
             login(request, new_user)
-            return redirect('home')
+            return redirect('my_page')
         else:
             messages.error(request, 'Ошибка регистрации')
-            # new_profile = PageForm()
-            # return render(request, 'network/register.html', {
-            #     'user_form': user_form,
-            #     'new_profile': new_profile
-            # })
+            new_profile = PageForm()
+            return render(request, 'network/register.html', {
+                'user_form': user_form,
+                'new_profile': new_profile
+            })
     else:
         user_form = UserRegisterForm()
         new_profile = PageForm()
@@ -52,6 +53,20 @@ def user_login(request):
     else:
         form = UserLoginForm()
     return render(request, 'network/login.html', {"form": form})
+
+
+@login_required
+def edit(request):
+    if request.method == 'POST':
+        page_form = PageEditForm(instance=request.user.page, data=request.POST, files=request.FILES)
+        if page_form.is_valid():
+            page_form.save()
+            return redirect('my_page')
+    else:
+        page_form = PageEditForm(instance=request.user.page)
+        return render(request,
+                      'network/edit.html', {
+                       'page_form': page_form})
 
 
 def user_logout(request):

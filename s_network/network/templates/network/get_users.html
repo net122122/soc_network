@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}
-    Пользователи ::  {{ block.super }}
+Пользователи ::  {{ block.super }}
 {% endblock %}
 
 {% block sidebar %}
@@ -11,22 +11,58 @@
 {% for item in get_users %}
 <style>
 img { width: 200px; height: 250px; object-fit: cover; }
+
 </style>
-            <div class="card mb-3">
-          <div class="card-body">
-              <div class="media">
-                  {% if item.photo %}
-                      <img src="{{ item.photo.url }}" alt=""   class="mr-3">
-                  {% else %}
-                      <img src="https://picsum.photos/id/237/350/235" alt="" class="mr-3">
-                  {% endif %}
-                  <div class="media-budy">
-                      <h5 class="card-title">{{ item.first_name }}</h5>
-                      <p class="card-text">{{ item.last_name }}</p>
-                      <a href="{{ item.get_absolute_url }}" class="btn btn-primary">Подробнее...</a>
-                  </div>
-              </div>
-          </div>
+<div class="card mb-3">
+    <div class="card-body">
+        <div class="media">
+            {% if item.photo %}
+            <img src="{{ item.photo.url }}" alt="" class="mr-3">
+            {% else %}
+            <img src="https://picsum.photos/id/237/350/235" alt="" class="mr-3">
+            {% endif %}
+            <div class="media-budy">
+                <h5 class="card-title">{{ item.first_name }}</h5>
+                <p class="card-text">{{ item.last_name }}</p>
+                <a href="{{ item.get_absolute_url }}" class="btn btn-primary">Подробнее...</a>
+            </div>
         </div>
+    </div>
+</div>
 {% endfor %}
+
+{% if page_obj.has_other_pages %}
+<nav aria-label="...">
+    <ul class="pagination">
+
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
+        </li>
+        {% endif %}
+
+        {% for p in page_obj.paginator.page_range %}
+
+        {% if page_obj.number == p %}
+        <li class="page-item active" aria-current="page">
+            <a class="page-link" href="?page={{ p }}">{{ p }}</a>
+        </li>
+        {% elif p > page_obj.number|add:-3 and p < page_obj.number|add:3 %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ p }}">{{ p }}</a>
+        </li>
+        {% endif %}
+
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Следующая</a>
+        </li>
+        {% endif %}
+
+    </ul>
+</nav>
+{% endif %}
+
 {% endblock %}

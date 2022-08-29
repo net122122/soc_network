@@ -16,11 +16,11 @@ class UserRegisterForm(forms.ModelForm):
     def clean_password2(self):
         cd = self.cleaned_data
         if cd['password'] != cd['password2']:
-            raise forms.ValidationError('Passwords don\'t match.')
+            raise forms.ValidationError('Пароли не совпадают')
         return cd['password2']
 
 
-class   PageForm(forms.ModelForm):
+class PageForm(forms.ModelForm):
     class Meta:
         model = Page
         fields = ('photo', 'age', 'first_name', 'last_name')
@@ -31,3 +31,11 @@ class UserLoginForm(AuthenticationForm):
                                widget=forms.TextInput(attrs={'class': 'form-control'}))
     password = forms.CharField(label='Пароль',
                                widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+
+
+class PageEditForm(forms.ModelForm):
+    class Meta:
+        model = Page
+        fields = ('first_name', 'last_name', 'age', 'photo')
+
+
