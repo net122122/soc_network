@@ -5,3 +5,17 @@
 {% block sidebar %}
 {% include 'inc/_sidebar.html' %}
 {% endblock %}
+
+{% block content %}
+
+<h1>Профиль : {{ request.user }}</h1>
+
+{% for friend in page.get_friends %}
+
+{{ friend }}
+<br>
+
+{% endfor %}
+Friends numder : {{ page.get_friends_no }}
+
+{% endblock %}

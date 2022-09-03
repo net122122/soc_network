@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Мои друзья{% endblock %}
+
+{% block sidebar %}
+{% include 'inc/_sidebar.html' %}
+{% endblock %}
+
+{% block content %}
+
+{% for item in user.page.get_friends %}
+
+<style>
+img { width: 200px; height: 250px; object-fit: cover; }
+
+
+</style>
+<div class="card mb-3">
+    <div class="card-body">
+        <div class="media">
+            <img src="{{ item.page.photo.url }}" alt="" class="mr-3">
+            <div class="media-budy">
+                <h5 class="card-title">{{ item.page.first_name }}</h5>
+                <p class="card-text">{{ item.page.last_name }}</p>
+                <a href="{{ item.page.get_absolute_url }}" class="btn btn-primary">Подробнее...</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endfor %}
+
+
+{% endblock %}

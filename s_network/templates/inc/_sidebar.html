@@ -2,7 +2,7 @@
 <div class="list-group">
   <a href="{% url 'my_page' %}" class="list-group-item list-group-item-action">Моя страница</a>
   <a href="{% url 'get_users' %}" class="list-group-item list-group-item-action">Пользователи</a>
-  <a href="#" class="list-group-item list-group-item-action">Мессенджер</a>
+  <a href="{% url 'my_friends' %}" class="list-group-item list-group-item-action">Мои друзья</a>
   <a href="#" class="list-group-item list-group-item-action">Фотографии</a>
 </div>
 {% endif %}

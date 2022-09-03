@@ -1,15 +1,23 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import PageForm, UserRegisterForm, UserLoginForm, PageEditForm
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView, ListView, TemplateView
 from django.contrib import messages
 from django.contrib.auth import login, logout
-from .models import Page
+from django.contrib.auth.models import User
+from .models import Page, Relationship
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 
 
 def index(request):
-    return render(request, template_name='network/index.html')
+    page = Page.objects.get(user=request.user)
+    context = {
+        'page': page
+    }
+    return render(request, 'network/index.html', context)
 
 
 def register(request):
@@ -49,7 +57,7 @@ def user_login(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('home')
+            return redirect('my_page')
     else:
         form = UserLoginForm()
     return render(request, 'network/login.html', {"form": form})
@@ -90,3 +98,22 @@ class MyPage(ListView):
     model = Page
     template_name = 'network/my_page.html'
     context_object_name = 'my_page'
+
+
+@receiver(post_save, sender=Relationship)
+def post_save_add_to_friends(sender, created, instance, **kwargs):
+    sender_ = instance.sender
+    receiver_ = instance.receiver
+    if instance.status == 'accepted':
+        sender_.friends.add(receiver_.user)
+        receiver_.friends.add(sender_.user)
+        sender_.save()
+        receiver_.save()
+
+
+class MyFriends(ListView):
+    model = Page
+    template_name = 'network/my_friends.html'
+    context_object_name = 'my_friends'
+
+
