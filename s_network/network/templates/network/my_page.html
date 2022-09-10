@@ -16,6 +16,17 @@
         <h5 class="card-title">{{ user.page.first_name }}</h5>
         <p class="card-text">{{ user.page.last_name}}</p>
         <p class="card-text">{{ user.page.age}}</p>
+        <br><br>
+        <form action="{% url 'like_page' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="page_pk" value="{{ user.page.pk }}">
+                        {% if user not in user.page.liked.all %}
+                            <button class="btn btn-outline-danger" type="submit">Лайк</button>
+                        {% else %}
+                            <button class="btn btn-danger" type="submit">Лайк</button>
+                        {% endif %}
+                            <strong>{{ user.page.liked.all.count }}</strong>
+                    </form>
     </div>
 </div>
 {% endblock %}

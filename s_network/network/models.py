@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 
 class Page(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    liked = models.ManyToManyField(User, related_name='liked', default=None, blank=True)
     friends = models.ManyToManyField(User, related_name='friends', blank=True)
     first_name = models.CharField(max_length=150, verbose_name='Имя')
     last_name = models.CharField(max_length=150, verbose_name='Фамилия')
@@ -20,6 +21,10 @@ class Page(models.Model):
 
     def get_friends_no(self):
         return self.friends.all().count()
+
+    @property
+    def num_likes(self):
+        return self.liked.all().count()
 
     def get_absolute_url(self):
         return reverse('view_page', kwargs={"pk": self.pk})
@@ -41,5 +46,8 @@ class Relationship(models.Model):
 
     def __str__(self):
         return f"{self.sender}-{self.receiver}-{self.status}"
+
+
+
 
 

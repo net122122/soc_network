@@ -23,6 +23,14 @@ img { width: 200px; height: 250px; object-fit: cover; }
                 <h5 class="card-title">{{ item.page.first_name }}</h5>
                 <p class="card-text">{{ item.page.last_name }}</p>
                 <a href="{{ item.page.get_absolute_url }}" class="btn btn-primary">Подробнее...</a>
+                {% if request.user in item.page.user.page.get_friends %}
+                    <br><br>
+                    <form action="{% url 'remove_friend' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="page_pk" value="{{ item.pk }}">
+                        <button type="submit" class="btn btn-danger">Удалить из друзей</button>
+                    </form>
+                {% endif %}
             </div>
         </div>
     </div>

@@ -6,7 +6,8 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 from .models import Page, Relationship
 from django.dispatch import receiver
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_delete
+from django.db.models import Q
 
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -101,7 +102,7 @@ class MyPage(ListView):
 
 
 @receiver(post_save, sender=Relationship)
-def post_save_add_to_friends(sender, created, instance, **kwargs):
+def change_friend(sender, created, instance, **kwargs):
     sender_ = instance.sender
     receiver_ = instance.receiver
     if instance.status == 'accepted':
@@ -111,9 +112,72 @@ def post_save_add_to_friends(sender, created, instance, **kwargs):
         receiver_.save()
 
 
+@receiver(pre_delete, sender=Relationship)
+def pre_delete_from_friends(sender, instance, **kwargs):
+    sender = instance.sender
+    receiver = instance.receiver
+    sender.friends.remove(receiver.user)
+    receiver.friends.remove(sender.user)
+    sender.save()
+    receiver.save()
+
+
+@login_required
+def remove_friend(request):
+    if request.method == 'POST':
+        user = request.user
+        pk = request.POST.get('page_pk')
+        sender = Page.objects.get(user=user)
+        receiver = Page.objects.get(pk=pk)
+
+        rel = Relationship.objects.get(
+            (Q(sender=sender) & Q(receiver=receiver)) | (Q(sender=receiver) & Q(receiver=sender))
+        )
+        rel.delete()
+        return redirect(request.META.get('HTTP_REFERER'))
+    return redirect('get_users')
+
+
+@login_required
+def add_friend(request):
+    if request.method == 'POST':
+        user = request.user
+        pk = request.POST.get('page_pk')
+        sender = Page.objects.get(user=user)
+        receiver = Page.objects.get(pk=pk)
+
+        rel = Relationship.objects.create(
+            sender=sender, receiver=receiver, status='accepted'
+        )
+        rel.save()
+        return redirect(request.META.get('HTTP_REFERER'))
+    return redirect('get_users')
+
+
+@login_required
+def like_page(request):
+    user = request.user
+    if request.method == 'POST':
+        page_id = request.POST.get('page_pk')
+        page_obj = Page.objects.get(id=page_id)
+
+        if user in page_obj.liked.all():
+            page_obj.liked.remove(user)
+        else:
+            page_obj.liked.add(user)
+
+        # like = Like.objects.get_or_create(user=user, page_id=page_id)
+        #
+        # if like.value == 'Лайк':
+        #     like.value = 'Убрать лайк'
+        # else:
+        #     like.value = 'Лайк'
+        # like.sasve()
+    return redirect(request.META.get('HTTP_REFERER'))
+
+
 class MyFriends(ListView):
     model = Page
     template_name = 'network/my_friends.html'
     context_object_name = 'my_friends'
-
 

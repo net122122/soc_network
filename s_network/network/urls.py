@@ -1,4 +1,6 @@
 from django.urls import path
+from . import views
+
 
 from .views import *
 
@@ -13,5 +15,8 @@ urlpatterns = [
     path('network/my-friends/', MyFriends.as_view(), name='my_friends'),
     path('network/<int:pk>/', ViewPage.as_view(), name='view_page'),
     path('network/edit/', edit, name='edit'),
+    path('network/remove-friend/', remove_friend, name='remove_friend'),
+    path('network/add-friend/', add_friend, name='add_friend'),
+    path('network/like-page/', like_page, name='like_page'),
 ]
 

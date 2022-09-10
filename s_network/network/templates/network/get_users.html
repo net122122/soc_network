@@ -9,6 +9,7 @@
 
 {% block content %}
 {% for item in get_users %}
+{% if not request.user.username in item.user.username %}
 <style>
 img { width: 200px; height: 250px; object-fit: cover; }
 
@@ -21,10 +22,27 @@ img { width: 200px; height: 250px; object-fit: cover; }
                 <h5 class="card-title">{{ item.first_name }}</h5>
                 <p class="card-text">{{ item.last_name }}</p>
                 <a href="{{ item.get_absolute_url }}" class="btn btn-primary">Подробнее...</a>
+                {% if not request.user in item.user.page.get_friends %}
+                    <br><br>
+                    <form action="{% url 'add_friend' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="page_pk" value="{{ item.pk }}">
+                        <button type="submit" class="btn btn-success">Добавить в друзья</button>
+                    </form>
+                {% else %}
+                    <br><br>
+                    <form action="{% url 'remove_friend' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="page_pk" value="{{ item.pk }}">
+                        <button type="submit" class="btn btn-danger">Удалить из друзей</button>
+                    </form>
+                {% endif %}
+
             </div>
         </div>
     </div>
 </div>
+{% endif %}
 {% endfor %}
 
 {% if page_obj.has_other_pages %}
